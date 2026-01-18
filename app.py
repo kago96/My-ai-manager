@@ -34,7 +34,7 @@ if st.button("🚀 Buat Skrip Sekarang"):
             # Mengatur API
             genai.configure(api_key=api_key)
             # Menggunakan model 'gemini-1.5-flash' yang paling cepat
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             with st.spinner("Sedang meriset produk..."):
                 if "Nara" in persona:
