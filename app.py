@@ -29,7 +29,7 @@ if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
     else:
         with st.spinner(f"AI sedang merasuki jiwa {persona}..."):
             try:
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('gemini-2.5-flash')
                 
                 # --- LOGIKA PEMISAHAN KARAKTER (UPDATE) ---
                 if "Nara" in persona:
