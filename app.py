@@ -30,7 +30,7 @@ if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
         with st.spinner("Menghubungi AI..."):
             try:
                 # Menggunakan Gemini 1.5 Flash (Model paling stabil & cepat di 2026)
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('gemini-2.5-flash')
                 
                 instr = f"Karakter: {persona}. Gaya Nara: santai/tech-savvy. Gaya Mbah Seno: bijak/jujur."
                 prompt = f"{instr}. Buatlah {tipe_konten} tentang {topik}. Sertakan hook viral dan prompt gambar AI."
