@@ -1,57 +1,58 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Pengaturan tampilan agar pas di layar HP
-st.set_page_config(page_title="Investigator AI Dashboard", layout="centered")
+# Konfigurasi halaman untuk HP
+st.set_page_config(page_title="Investigator Produk AI", layout="centered")
 
-# CSS khusus agar tombol lebih mudah ditekan di HP
+# CSS agar tampilan lebih bersih di layar kecil
 st.markdown("""
     <style>
-    .stButton>button { width: 100%; height: 3em; font-size: 18px; margin-bottom: 10px; }
+    .stButton>button { width: 100%; border-radius: 10px; height: 3.5em; background-color: #FF4B4B; color: white; }
     </style>
     """, unsafe_allow_html=True)
 
-# Input API Key (Sidebar tersembunyi untuk keamanan)
 with st.sidebar:
-    st.title("Settings")
-    api_key = st.text_input("AIzaSyAPjxWINALBZ6sCtDtnwBhU1ew6HNRKUTU:", type="password")
-    if api_key:
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.5-flash') # Versi flash lebih cepat & murah
+    st.title("⚙️ Pengaturan")
+    # .strip() akan menghapus spasi dan .replace() menghapus titik dua jika tidak sengaja ter-copy
+    raw_key = st.text_input("Tempel Gemini API Key:", type="password")
+    api_key = raw_key.strip().replace(":", "") 
 
 st.title("🔎 Investigator Produk AI")
-st.write("Kelola Nara & Mbah Seno dalam satu genggaman.")
+st.write("Target: Konten Viral & Konsisten.")
 
-# Pilih Persona dengan Deskripsi yang sudah 'Ter-Lock'
 persona = st.radio("Pilih Talent:", ["Nara (Tech Enthusiast)", "Mbah Seno (Bijak/Senior)"], horizontal=True)
+topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: Headphone Sony vs Bose")
+tipe_konten = st.selectbox("Jenis Konten:", ["Ulasan Singkat (TikTok)", "Perbandingan Harga", "Hook Video Viral"])
 
-# Input Topik
-topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: iPhone 15 vs Xiaomi 14")
-
-# Pilihan tipe konten
-tipe_konten = st.selectbox("Jenis Konten:", ["Ulasan Singkat (Shorts/TikTok)", "Perbandingan Harga", "Hook Video Viral"])
-
-if st.button("Generate Script & Prompt"):
+if st.button("🚀 Buat Skrip Sekarang"):
     if not api_key:
-        st.error("Masukkan API Key di menu samping!")
+        st.error("Silakan masukkan API Key di menu samping (klik > di kiri atas HP).")
     elif not topik:
-        st.warning("Isi produknya dulu, Bos!")
+        st.warning("Produknya diisi dulu ya!")
     else:
-        with st.spinner("AI sedang meriset..."):
-            # System Instruction agar konsisten
-            if "Nara" in persona:
-                instr = "Gaya: Wanita muda, tech-savvy, santai tapi tepat (seperti Gadgetin). Bahasa: Indonesia gaul tapi sopan. Fokus: Estetika dan fungsionalitas."
-            else:
-                instr = "Gaya: Kakek bijak, bahasa sederhana, jujur, investigator. Bahasa: Indonesia baku tapi hangat. Fokus: Ketahanan dan nilai uang."
+        try:
+            # Mengatur API
+            genai.configure(api_key=AIzaSyBqHERInpihiwddT5DYPoSeh2ZzFXiY5Dw)
+            # Menggunakan model 'gemini-1.5-flash' yang paling cepat
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
-            prompt = f"{instr}. Buatlah {tipe_konten} untuk produk: {topik}. Sertakan 3 pilihan 'Hook' pembuka yang menarik perhatian dalam 3 detik pertama. Di akhir, berikan 1 prompt gambar AI untuk thumbnail."
-            
-            response = model.generate_content(prompt)
-            
-            # Menampilkan hasil dengan fitur 'Copy' yang mudah di HP
-            st.subheader("🚀 Hasil Investigasi")
-            st.text_area("Copy skrip di sini:", value=response.text, height=400)
-            st.success("Tugas Anda: Salin ke CapCut, gunakan suara AI, dan posting!")
+            with st.spinner("Sedang meriset produk..."):
+                if "Nara" in persona:
+                    gaya = "Gaya: Wanita muda, tech-savvy, santai tapi tepat seperti Gadgetin. Bahasa: Indonesia santai."
+                else:
+                    gaya = "Gaya: Pria tua bijak, investigator jujur, bahasa sederhana namun hangat."
+                
+                prompt = f"{gaya}. Buatlah {tipe_konten} tentang {topik}. Sertakan Hook pembuka 3 detik yang viral dan 1 prompt gambar AI di akhir."
+                
+                response = model.generate_content(prompt)
+                
+                st.subheader("📝 Hasil Skrip:")
+                st.write(response.text)
+                st.success("Berhasil! Tinggal salin ke CapCut.")
+                
+        except Exception as e:
+            st.error(f"Terjadi kesalahan: {e}")
+            st.info("Tips: Pastikan API Key Anda sudah benar dan tidak ada spasi di awal/akhir.")
 
 st.divider()
-st.caption("Target: Konsisten & Viral. Jangan lupa cek trend di TikTok pagi ini!")
+st.caption("Dibuat untuk mempermudah aset digital Anda.")
