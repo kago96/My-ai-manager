@@ -33,7 +33,7 @@ if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
                 prompt = f"{instr}. Karakter: {persona}. Buat {tipe_konten} untuk {topik}."
                 
                 response = client.models.generate_content(
-                    model='gemini-2.0-flash', # Menggunakan versi stabil terbaru
+                    model='gemini-2.5-flash', # Menggunakan versi stabil terbaru
                     contents=prompt
                 )
                 
