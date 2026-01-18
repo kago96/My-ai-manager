@@ -17,7 +17,7 @@ with st.sidebar:
     api_key = st.text_input("AIzaSyAPjxWINALBZ6sCtDtnwBhU1ew6HNRKUTU:", type="paswod123.")
     if api_key:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash') # Versi flash lebih cepat & murah
+        model = genai.GenerativeModel('gemini-2.5-flash') # Versi flash lebih cepat & murah
 
 st.title("🔎 Investigator Produk AI")
 st.write("Kelola Nara & Mbah Seno dalam satu genggaman.")
