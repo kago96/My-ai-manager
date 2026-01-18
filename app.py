@@ -1,61 +1,72 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Tampilan khusus HP
-st.set_page_config(page_title="Investigator Produk 2026", layout="centered")
+# Konfigurasi Tampilan Mobile 2026
+st.set_page_config(page_title="Investigator AI 2.5", layout="centered")
 
-# 1. Koneksi Aman ke Secrets
+# CSS khusus agar tombol lebih 'tap-able' di jempol HP
+st.markdown("""
+    <style>
+    .stButton>button { width: 100%; border-radius: 15px; height: 4em; background: linear-gradient(45deg, #007BFF, #00C6FF); color: white; font-weight: bold; border: none; }
+    .stRadio > label { font-weight: bold; font-size: 18px; }
+    </style>
+    """, unsafe_allow_html=True)
+
+# 1. Koneksi Aman ke Brankas Secrets
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
 except Exception:
-    st.error("❌ API Key tidak ditemukan di Secrets!")
+    st.error("❌ API Key tidak ditemukan! Pastikan sudah input di menu Secrets Streamlit.")
     st.stop()
 
 st.title("🔎 Investigator Produk AI")
-st.write("Target: Konten Viral & Konsisten")
+st.write("Powering by **Gemini 2.5 Flash** | Versi 2026")
 
-# 2. Pilihan Karakter
-persona = st.radio("Pilih Talent:", ["Nara (Tech Enthusiast)", "Mbah Seno (Bijak/Senior)"], horizontal=True)
+# 2. Pilihan Karakter (Persona Selector)
+persona = st.radio("Pilih Talent Utama:", ["Nara (Tech Enthusiast)", "Mbah Seno (Bijak/Senior)"], horizontal=True)
 
-# 3. Input Konten
-topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: HP 2 Jutaan Terbaik")
-tipe_konten = st.selectbox("Jenis Konten:", ["TikTok/Reels Hook", "Ulasan Jujur", "Perbandingan Worth-it"])
+# 3. Input Investigasi
+topik = st.text_input("Produk/Gadget yang diinvestigasi:", placeholder="Contoh: HP Gaming 2026 Murah")
+tipe_konten = st.selectbox("Jenis Konten:", ["Hook Viral TikTok", "Ulasan 'Worth-to-Buy'", "Investigasi Kejujuran Produk"])
 
-# 4. Proses Pembuatan Skrip
-if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
+# 4. Engine Generator 2.5
+if st.button("🚀 GENERATE SKRIP 2.5", use_container_width=True):
     if not topik:
-        st.warning("Isi dulu nama produknya!")
+        st.warning("Input produknya dulu, Bos!")
     else:
-        with st.spinner(f"AI sedang merasuki jiwa {persona}..."):
+        with st.spinner(f"Gemini 2.5 sedang memproses karakter {persona}..."):
             try:
+                # Mengaktifkan model Gemini 2.5 Flash terbaru
                 model = genai.GenerativeModel('gemini-2.5-flash')
                 
-                # --- LOGIKA PEMISAHAN KARAKTER (UPDATE) ---
+                # --- ISOLASI KARAKTER TOTAL ---
                 if "Nara" in persona:
-                    instruksi_karakter = (
-                        "Kamu ADALAH Nara. Seorang tech enthusiast wanita muda yang santai, cerdas, "
-                        "dan to-the-point seperti gaya Gadgetin. Gunakan bahasa Indonesia yang modern dan ringan. "
-                        "JANGAN menyebutkan Mbah Seno atau karakter lain. Fokuslah pada estetika dan fungsionalitas gadget."
+                    context = (
+                        "IDENTITAS: Kamu adalah Nara. Influencer teknologi wanita muda. Gaya bicara: santai, cerdas, "
+                        "sedikit sarkas tapi jujur, persis seperti gaya Gadgetin. Fokus pada estetika dan 'vibe' produk. "
+                        "LARANGAN: Jangan pernah menyebut Mbah Seno. Jangan menggunakan bahasa kaku."
                     )
                 else:
-                    instruksi_karakter = (
-                        "Kamu ADALAH Mbah Seno. Seorang kakek bijak yang jujur, teliti, dan berpengalaman "
-                        "dalam menginvestigasi kualitas produk. Gunakan bahasa Indonesia yang sederhana, hangat, "
-                        "dan berwibawa. JANGAN menyebutkan Nara atau karakter lain. Fokuslah pada ketahanan dan nilai uang (value for money)."
+                    context = (
+                        "IDENTITAS: Kamu adalah Mbah Seno. Kakek investigator produk yang sangat bijak dan teliti. "
+                        "Gaya bicara: tenang, hangat, jujur, menggunakan analogi hidup sederhana. Fokus pada keawetan "
+                        "dan harga yang masuk akal. LARANGAN: Jangan pernah menyebut Nara. Gunakan sapaan 'Cucu' atau 'Nak'."
                     )
                 
-                # Gabungkan instruksi dengan permintaan konten
-                prompt_akhir = f"{instruksi_karakter}\n\nTugas: Buatlah {tipe_konten} tentang {topik}. Sertakan 3 pilihan hook viral di awal dan 1 prompt gambar AI di akhir."
+                prompt_final = f"{context}\n\nTUGAS: Buatlah skrip {tipe_konten} tentang {topik}. " \
+                               f"Sertakan 3 pilihan Hook Viral dan 1 Prompt Gambar AI yang spesifik di akhir."
                 
-                response = model.generate_content(prompt_akhir)
+                response = model.generate_content(prompt_final)
                 
-                st.subheader(f"📝 Skrip untuk {persona}:")
+                # Tampilan Hasil
+                st.subheader(f"📝 Output Skrip {persona.split()[0]}:")
                 st.write(response.text)
-                st.success(f"✅ Berhasil! Skrip ini murni gaya {persona.split()[0]}.")
+                st.success("✅ Generasi 2.5 Berhasil!")
                 
             except Exception as e:
-                st.error(f"Terjadi kesalahan teknis: {e}")
+                st.error(f"Gagal memanggil Gemini 2.5: {e}")
+                st.info("Catatan: Jika model 2.5 belum tersedia di region Anda, coba ganti kodenya ke 'gemini-2.0-flash'.")
 
 st.divider()
-st.caption("Investigator AI Dashboard © 2026")
+st.caption("Investigator AI Dashboard © 2026 - Optimized for Mobile")
