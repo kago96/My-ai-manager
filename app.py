@@ -14,7 +14,7 @@ st.markdown("""
 with st.sidebar:
     st.title("⚙️ Pengaturan")
     # .strip() akan menghapus spasi dan .replace() menghapus titik dua jika tidak sengaja ter-copy
-    raw_key = st.text_input("Tempel Gemini API Key:", type="password")
+    raw_key = st.text_input("AIzaSyBqHERInpihiwddT5DYPoSeh2ZzFXiY5Dw:", type="password")
     api_key = raw_key.strip().replace(":", "") 
 
 st.title("🔎 Investigator Produk AI")
@@ -32,7 +32,7 @@ if st.button("🚀 Buat Skrip Sekarang"):
     else:
         try:
             # Mengatur API
-            genai.configure(api_key=AIzaSyBqHERInpihiwddT5DYPoSeh2ZzFXiY5Dw)
+            genai.configure(api_key=api_key)
             # Menggunakan model 'gemini-1.5-flash' yang paling cepat
             model = genai.GenerativeModel('gemini-1.5-flash')
             
