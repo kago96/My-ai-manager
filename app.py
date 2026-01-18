@@ -14,7 +14,7 @@ st.markdown("""
 # Input API Key (Sidebar tersembunyi untuk keamanan)
 with st.sidebar:
     st.title("Settings")
-    api_key = st.text_input("AIzaSyAPjxWINALBZ6sCtDtnwBhU1ew6HNRKUTU:", type="paswod123")
+    api_key = st.text_input("AIzaSyAPjxWINALBZ6sCtDtnwBhU1ew6HNRKUTU:", type="password")
     if api_key:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-2.5-flash') # Versi flash lebih cepat & murah
