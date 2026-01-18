@@ -1,58 +1,47 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
-# Konfigurasi halaman untuk HP
-st.set_page_config(page_title="Investigator Produk AI", layout="centered")
+# Konfigurasi halaman
+st.set_page_config(page_title="Investigator Produk 2026", layout="centered")
 
-# CSS agar tampilan lebih bersih di layar kecil
-st.markdown("""
-    <style>
-    .stButton>button { width: 100%; border-radius: 10px; height: 3.5em; background-color: #FF4B4B; color: white; }
-    </style>
-    """, unsafe_allow_html=True)
-
-with st.sidebar:
-    st.title("⚙️ Pengaturan")
-    # .strip() akan menghapus spasi dan .replace() menghapus titik dua jika tidak sengaja ter-copy
-    raw_key = st.text_input("AIzaSyBqHERInpihiwddT5DYPoSeh2ZzFXiY5Dw:", type="password")
-    api_key = raw_key.strip().replace(":", "") 
+# Mengambil API Key dari Secrets secara otomatis (Tidak terlihat di layar)
+try:
+    API_KEY = st.secrets["GEMINI_API_KEY"]
+    client = genai.Client(api_key=API_KEY)
+except Exception:
+    st.error("API Key tidak ditemukan! Pastikan sudah memasukkannya di menu 'Secrets' di Streamlit Cloud.")
+    st.stop()
 
 st.title("🔎 Investigator Produk AI")
-st.write("Target: Konten Viral & Konsisten.")
+st.write("Aplikasi Aman & Privat (API Key Tersembunyi)")
 
-persona = st.radio("Pilih Talent:", ["Nara (Tech Enthusiast)", "Mbah Seno (Bijak/Senior)"], horizontal=True)
-topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: Headphone Sony vs Bose")
-tipe_konten = st.selectbox("Jenis Konten:", ["Ulasan Singkat (TikTok)", "Perbandingan Harga", "Hook Video Viral"])
+# Pilihan Talent
+persona = st.radio("Pilih Talent:", ["Nara (Tech)", "Mbah Seno (Bijak)"], horizontal=True)
 
-if st.button("🚀 Buat Skrip Sekarang"):
-    if not api_key:
-        st.error("Silakan masukkan API Key di menu samping (klik > di kiri atas HP).")
-    elif not topik:
-        st.warning("Produknya diisi dulu ya!")
+# Input Produk
+topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: Laptop 2026")
+tipe_konten = st.selectbox("Jenis Konten:", ["TikTok/Reels Hook", "Ulasan Jujur", "Perbandingan Worth-it"])
+
+# Tombol Eksekusi
+if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
+    if not topik:
+        st.warning("Isi dulu nama produknya!")
     else:
-        try:
-            # Mengatur API
-            genai.configure(api_key=api_key)
-            # Menggunakan model 'gemini-1.5-flash' yang paling cepat
-            model = genai.GenerativeModel('gemini-2.5-flash')
-            
-            with st.spinner("Sedang meriset produk..."):
-                if "Nara" in persona:
-                    gaya = "Gaya: Wanita muda, tech-savvy, santai tapi tepat seperti Gadgetin. Bahasa: Indonesia santai."
-                else:
-                    gaya = "Gaya: Pria tua bijak, investigator jujur, bahasa sederhana namun hangat."
+        with st.spinner("Menghubungi AI..."):
+            try:
+                instr = "Nara: influencer tech wanita, santai. Mbah Seno: kakek bijak, jujur."
+                prompt = f"{instr}. Karakter: {persona}. Buat {tipe_konten} untuk {topik}."
                 
-                prompt = f"{gaya}. Buatlah {tipe_konten} tentang {topik}. Sertakan Hook pembuka 3 detik yang viral dan 1 prompt gambar AI di akhir."
-                
-                response = model.generate_content(prompt)
+                response = client.models.generate_content(
+                    model='gemini-2.0-flash', # Menggunakan versi stabil terbaru
+                    contents=prompt
+                )
                 
                 st.subheader("📝 Hasil Skrip:")
                 st.write(response.text)
-                st.success("Berhasil! Tinggal salin ke CapCut.")
-                
-        except Exception as e:
-            st.error(f"Terjadi kesalahan: {e}")
-            st.info("Tips: Pastikan API Key Anda sudah benar dan tidak ada spasi di awal/akhir.")
+                st.success("Berhasil! API Key Anda tetap rahasia.")
+            except Exception as e:
+                st.error(f"Gagal memproses: {e}")
 
 st.divider()
-st.caption("Dibuat untuk mempermudah aset digital Anda.")
+st.caption("Investigator AI Dashboard © 2026")
