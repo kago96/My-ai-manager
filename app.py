@@ -1,47 +1,47 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 
-# Konfigurasi halaman
+# Tampilan khusus HP
 st.set_page_config(page_title="Investigator Produk 2026", layout="centered")
 
-# Mengambil API Key dari Secrets secara otomatis (Tidak terlihat di layar)
+# 1. Koneksi Aman ke Secrets
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
-    client = genai.Client(api_key=API_KEY)
+    genai.configure(api_key=API_KEY)
 except Exception:
-    st.error("API Key tidak ditemukan! Pastikan sudah memasukkannya di menu 'Secrets' di Streamlit Cloud.")
+    st.error("❌ API Key tidak ditemukan di Secrets!")
     st.stop()
 
 st.title("🔎 Investigator Produk AI")
-st.write("Aplikasi Aman & Privat (API Key Tersembunyi)")
+st.write("Versi Stabil 2026 - Koneksi Aman")
 
-# Pilihan Talent
+# 2. Pilihan Karakter
 persona = st.radio("Pilih Talent:", ["Nara (Tech)", "Mbah Seno (Bijak)"], horizontal=True)
 
-# Input Produk
-topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: Laptop 2026")
+# 3. Input Konten
+topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: Gadget terbaru 2026")
 tipe_konten = st.selectbox("Jenis Konten:", ["TikTok/Reels Hook", "Ulasan Jujur", "Perbandingan Worth-it"])
 
-# Tombol Eksekusi
+# 4. Proses Pembuatan Skrip
 if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
     if not topik:
         st.warning("Isi dulu nama produknya!")
     else:
         with st.spinner("Menghubungi AI..."):
             try:
-                instr = "Nara: influencer tech wanita, santai. Mbah Seno: kakek bijak, jujur."
-                prompt = f"{instr}. Karakter: {persona}. Buat {tipe_konten} untuk {topik}."
+                # Menggunakan Gemini 1.5 Flash (Model paling stabil & cepat di 2026)
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash', # Menggunakan versi stabil terbaru
-                    contents=prompt
-                )
+                instr = f"Karakter: {persona}. Gaya Nara: santai/tech-savvy. Gaya Mbah Seno: bijak/jujur."
+                prompt = f"{instr}. Buatlah {tipe_konten} tentang {topik}. Sertakan hook viral dan prompt gambar AI."
+                
+                response = model.generate_content(prompt)
                 
                 st.subheader("📝 Hasil Skrip:")
                 st.write(response.text)
-                st.success("Berhasil! API Key Anda tetap rahasia.")
+                st.success("✅ Berhasil! API Key Anda tetap tersembunyi.")
             except Exception as e:
-                st.error(f"Gagal memproses: {e}")
+                st.error(f"Terjadi kesalahan teknis: {e}")
 
 st.divider()
 st.caption("Investigator AI Dashboard © 2026")
