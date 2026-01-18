@@ -13,13 +13,13 @@ except Exception:
     st.stop()
 
 st.title("🔎 Investigator Produk AI")
-st.write("Versi Stabil 2026 - Koneksi Aman")
+st.write("Target: Konten Viral & Konsisten")
 
 # 2. Pilihan Karakter
-persona = st.radio("Pilih Talent:", ["Nara (Tech)", "Mbah Seno (Bijak)"], horizontal=True)
+persona = st.radio("Pilih Talent:", ["Nara (Tech Enthusiast)", "Mbah Seno (Bijak/Senior)"], horizontal=True)
 
 # 3. Input Konten
-topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: Gadget terbaru 2026")
+topik = st.text_input("Produk yang akan diinvestigasi:", placeholder="Contoh: HP 2 Jutaan Terbaik")
 tipe_konten = st.selectbox("Jenis Konten:", ["TikTok/Reels Hook", "Ulasan Jujur", "Perbandingan Worth-it"])
 
 # 4. Proses Pembuatan Skrip
@@ -27,19 +27,33 @@ if st.button("🚀 Buat Skrip Sekarang", use_container_width=True):
     if not topik:
         st.warning("Isi dulu nama produknya!")
     else:
-        with st.spinner("Menghubungi AI..."):
+        with st.spinner(f"AI sedang merasuki jiwa {persona}..."):
             try:
-                # Menggunakan Gemini 1.5 Flash (Model paling stabil & cepat di 2026)
-                model = genai.GenerativeModel('gemini-2.5-flash')
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                instr = f"Karakter: {persona}. Gaya Nara: santai/tech-savvy. Gaya Mbah Seno: bijak/jujur."
-                prompt = f"{instr}. Buatlah {tipe_konten} tentang {topik}. Sertakan hook viral dan prompt gambar AI."
+                # --- LOGIKA PEMISAHAN KARAKTER (UPDATE) ---
+                if "Nara" in persona:
+                    instruksi_karakter = (
+                        "Kamu ADALAH Nara. Seorang tech enthusiast wanita muda yang santai, cerdas, "
+                        "dan to-the-point seperti gaya Gadgetin. Gunakan bahasa Indonesia yang modern dan ringan. "
+                        "JANGAN menyebutkan Mbah Seno atau karakter lain. Fokuslah pada estetika dan fungsionalitas gadget."
+                    )
+                else:
+                    instruksi_karakter = (
+                        "Kamu ADALAH Mbah Seno. Seorang kakek bijak yang jujur, teliti, dan berpengalaman "
+                        "dalam menginvestigasi kualitas produk. Gunakan bahasa Indonesia yang sederhana, hangat, "
+                        "dan berwibawa. JANGAN menyebutkan Nara atau karakter lain. Fokuslah pada ketahanan dan nilai uang (value for money)."
+                    )
                 
-                response = model.generate_content(prompt)
+                # Gabungkan instruksi dengan permintaan konten
+                prompt_akhir = f"{instruksi_karakter}\n\nTugas: Buatlah {tipe_konten} tentang {topik}. Sertakan 3 pilihan hook viral di awal dan 1 prompt gambar AI di akhir."
                 
-                st.subheader("📝 Hasil Skrip:")
+                response = model.generate_content(prompt_akhir)
+                
+                st.subheader(f"📝 Skrip untuk {persona}:")
                 st.write(response.text)
-                st.success("✅ Berhasil! API Key Anda tetap tersembunyi.")
+                st.success(f"✅ Berhasil! Skrip ini murni gaya {persona.split()[0]}.")
+                
             except Exception as e:
                 st.error(f"Terjadi kesalahan teknis: {e}")
 
