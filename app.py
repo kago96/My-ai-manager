@@ -26,7 +26,7 @@ if st.button("🚀 MULAI PRODUKSI", use_container_width=True):
     else:
         with st.spinner("Mbah sedang merancang skrip dan foto..."):
             try:
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('gemini-2.5-flash')
                 
                 # Prompt yang sangat detail untuk hasil gambar maksimal
                 prompt_logic = (
