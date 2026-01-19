@@ -36,7 +36,7 @@ if st.button("🚀 BUAT SKRIP MBAH SENO", use_container_width=True):
             try:
                 # Menggunakan model 1.5-flash untuk stabilitas hosting, 
                 # namun instruksi dioptimalkan untuk performa setara 2.5
-                model = genai.GenerativeModel('gemini-3-flash')
+                model = genai.GenerativeModel('gemini-2.5-flash')
                 
                 # --- INSTRUKSI TETAP (HARDCODED) ---
                 instruksi = (
